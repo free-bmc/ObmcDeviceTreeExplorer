@@ -1,0 +1,601 @@
+/dts-v1/;
+
+#include "aspeed-g6.dtsi"
+#include <dt-bindings/gpio/aspeed-gpio.h>
+#include <dt-bindings/i2c/i2c.h>
+
+/ {
+	model = "DTS Explorer Sample Platform";
+	compatible = "jabil,ast2600-bmc", "aspeed,ast2600";
+
+	aliases {
+		serial4 = &uart5;
+	};
+
+	chosen {
+		stdout-path = &uart5;
+		bootargs = "console=ttyS4,115200 earlyprintk";
+	};
+
+	memory@80000000 {
+		reg = <0x80000000 0x20000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+                flash_memory: region@98000000 {
+            		no-map;
+            		reg = <0x98000000 0x04000000>; /* 64M */
+        	};
+		vga_memory: framebuffer@7f000000 {
+			no-map;
+			reg = <0x7f000000 0x01000000>;
+		};
+
+		gfx_memory: framebuffer {
+			size = <0x01000000>;
+			alignment = <0x01000000>;
+			compatible = "shared-dma-pool";
+			reusable;
+		};
+		vga-shared-memory {
+			compatible = "aspeed,ast2500-vga-sharedmem";
+			reg = <0x9ff00000 0x100000>;
+		};
+
+        	safs_memory: region@30000000 {
+            		no-map;
+            		reg = <0x30000000 0x08000000>; /* 128M */
+		};
+
+	};
+
+	iio-hwmon-12v {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 0>;
+	};
+
+	iio-hwmon-3v3 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 1>;
+	};
+
+	iio-hwmon-vnn-pch-aux {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 2>;
+	};
+
+	iio-hwmon-1v05-pch-aux {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 3>;
+	};
+
+	iio-hwmon-12v-aux {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 4>;
+	};
+
+	iio-hwmon-3v3-aux {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 5>;
+	};
+
+	iio-hwmon-1v8-pch-aux {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 6>;
+	};
+
+	iio-hwmon-3v-bat {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 7>;
+	};
+
+	iio-hwmon-vccin-cpu1 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 8>;
+	};
+
+	iio-hwmon-vccin-cpu2 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 9>;
+	};
+
+	iio-hwmon-vddq-abcd-cpu1 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 10>;
+	};
+
+	iio-hwmon-vddq-efgh-cpu1 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 11>;
+	};
+
+	iio-hwmon-vddq-abcd-cpu2 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 12>;
+	};
+
+	iio-hwmon-vddq-efgh-cpu2 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 13>;
+	};
+
+	iio-hwmon-vccio-cpu1 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 14>;
+	};
+
+	iio-hwmon-vccio-cpu2 {
+		compatible = "iio-hwmon";
+		io-channels = <&adc 15>;
+	};
+	
+	leds {
+		compatible = "gpio-leds";
+
+		identify {
+			
+			default-state = "on";
+			gpios = <&gpio ASPEED_GPIO(L, 1) GPIO_ACTIVE_LOW>;
+		};
+
+		status_amber {
+			label = "FP Status Amber";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(S, 5) GPIO_ACTIVE_LOW>;
+		};
+
+		status_green {
+			label = "FP Status Green";
+			default-state = "keep";
+			gpios = <&gpio ASPEED_GPIO(S, 4) GPIO_ACTIVE_LOW>;
+		};
+		
+		fan1_fault {
+			label = "Fan1 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(R, 2) GPIO_ACTIVE_LOW>;
+		};
+
+		fan2_fault {
+			.label = "Fan2 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(R, 3) GPIO_ACTIVE_LOW>;
+		};
+
+		fan3_fault {
+			label = "Fan3 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(R, 4) GPIO_ACTIVE_LOW>;
+		};
+
+		fan4_fault {
+			label = "Fan4 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(R, 5) GPIO_ACTIVE_LOW>;
+		};
+
+		fan5_fault {
+			label = "Fan5 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(H, 4) GPIO_ACTIVE_LOW>;
+		};
+		fan6_fault {
+			label = "Fan6 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(H, 5) GPIO_ACTIVE_LOW>;
+		};
+		fan7_fault {
+			label = "Fan7 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(E, 6) GPIO_ACTIVE_LOW>;
+		};
+		fan8_fault {
+			label = "Fan8 Fault";
+			default-state = "off"; 
+			gpios = <&gpio ASPEED_GPIO(E, 7) GPIO_ACTIVE_LOW>;
+		};					
+	};
+
+};
+
+&fmc {
+	status = "okay";
+	flash@0 {
+		status = "okay";
+		m25p,fast-read;
+#include "openbmc-flash-layout-64M.dtsi"
+	};
+};
+/*
+&jtag {
+	status = "okay";
+};
+*/
+
+&peci0 {
+	status = "okay";
+};
+
+&syscon {
+	uart-clock-high-speed;
+	status = "okay";
+
+	misc_control {
+		compatible = "aspeed,bmc-misc";
+		uart_port_debug {
+			offset = <0x2c>;
+			bit-mask = <0x1>;
+			bit-shift = <10>;
+			read-only;
+		};
+		p2a-bridge {
+			offset = <0x180>;
+			bit-mask = <0x1>;
+			bit-shift = <1>;
+			read-only;
+		};
+		boot-2nd-flash {
+			offset = <0x70>;
+			bit-mask = <0x1>;
+			bit-shift = <17>;
+			read-only;
+		};
+		chip_id {
+			offset = <0x150>;
+			bit-mask = <0x0fffffff 0xffffffff>;
+			bit-shift = <0>;
+			read-only;
+			reg-width = <64>;
+			hash-data = "d44f9b804976fa23c2e25d62f16154d26520a7e24c5555095fd1b55c027804f1570dcd16189739c640cd7d9a6ce14944a2c4eaf1dc429eed6940e8a83498a474";
+		};
+	};
+};
+
+&adc {
+	status = "okay";
+};
+
+&gpio { /* Mapped to Mt Elbert signals of interest */
+	status = "okay";
+	/* Enable GPIOE0 and GPIOE2 pass-through by default */
+	pinctrl-names = "pass-through";
+	pinctrl-0 = <&pinctrl_gpie0_default
+			&pinctrl_gpie2_default
+			&pinctrl_gpie4_default>;
+	gpio-line-names =
+	/*A0-A7*/	"FM_INTRUDER_HDR_BMC_N","","","","CPU1_THERMTRIP_N","CPU2_THERMTRIP_N","","FM_INTRUDER_HDR_BMC_N",
+	/*B0-B7*/	"CPU1_PRSNT_R_N","CPU2_PRSNT_R_N","PSU1_PRSNT_R_N","PSU2_PRSNT_R_N","CPU1_MEMHOT_R_N","CPU2_MEMHOT_R_N","CPU1_PROCHOT","CPU2_PROCHOT",
+	/*C0-C7*/	"FAN1_PRSNT_R_N","FAN2_PRSNT_R_N","FAN3_PRSNT_R_N","FAN4_PRSNT_R_N","FAN5_PRSNT_R_N","FAN6_PRSNT_R_N","FAN7_PRSNT_R_N","FAN8_PRSNT_R_N",
+	/*D0-D7*/	"","","","","","","","",
+	/*E0-E7*/	"BMC_RST_BTN_N","RST_BMC_RSTBTN_OUT_R_N","FP_BNC_PWR_BTN_R_N","FP_BNC_PWR_BTN_N","DBP_PRESENT_R2_N","FM_BMC_DBP_PRESENT_R_N","FAN7_FAULT_LED_R","FAN8_FAULT_LED_R",
+	/*F0-F7*/	"IRQ_BMC_PCH_NMI_R","FM_CPU2_DISABLE_COD_N","FM_CPU1_MEMHOT_OUT_N","FM_CPU2_MEMHOT_OUT_N","FM_CPU_ERR0_LVT3_N","FM_CPU_ERR1_LVT3_N","RST_PLTRST_BMC_N","H_BMC_PRDY_R_N",	
+	/*G0-G7*/	"FM_CPU_ERR2_LVT3_N","FM_CPU_MSMI_CATERR_LVT3_N","FM_PCH_BMC_THERMTRIP_N","","IRQ_NMI_EVENT_R_N","","BMC_RST_RTCRST","",	
+	/*H0-H7*/	"CPLD_BMC_PWRGD_SYS_PWROK_R","","","","FAN5_FAULT_LED_R","FAN6_FAULT_LED_R","ALERT_THM_R_N","BMC_NMI_BTN_N",
+	/*I0-I7*/	"","","","","","","","", 
+	/*J0-J7*/	"","","","","","","","",
+	/*K0-K7*/	"","","","","","","","",
+	/*L0-L7*/	"UID_BTN_N","BMC_UID_LED_R_N","BMC_PWR_AMB_LED_R_N","RST_IPMB_SWITCH_R_N","","","","",
+	/*M0-M7*/	"","","","","","","","",
+	/*N0-N7*/	"","","","","","","","",
+	/*O0-O7*/	"","","","","","","","",
+	/*P0-P7*/	"","","","","","","","",
+	/*Q0-Q7*/	"","","","","","","","",
+	/*R0-R7*/	"","","FAN1_FAULT_LED_R","FAN2_FAULT_LED_R","FAN3_FAULT_LED_R","FAN4_FAULT_LED_R","","",	
+	/*S0-S7*/	"FM_REMOTE_DEBUG_EN_R_DET","DBP_SYSPWROK_R","RST_RSMRST_BMC_N","FM_BMC_READY_N","FP_LED_STATUS_GREEN_N","FP_LED_STATUS_AMBER_N","","",
+	/*T0-T7*/	"","","","","","","","",
+	/*U0-U7*/	"","","","","","","","",
+	/*V0-V7*/	"","","","","","","","",
+	/*W0-W7*/	"","","","","","","","",
+	/*X0-X7*/	"","","","","","","","",	
+	/*Y0-Y7*/	"FP_SLPS3_R_N","FP_SLPS4_R_N","","FM_BMC_ONCTL_R_N","","","","",	
+	/*Z0-Z7*/	"FM_BMC_PWR_BTN_N","","PHYSICAL_PRSNT_R_N","","","","","",
+	/*AA0-AA7*/	"A_P3V_BAT_SCALED_EN","","","","DBP_CPU_PREQ_R_N","FM_JTAG_TCK_MUX_SEL_R","IRQ_SMI_ACTIVE_BMC_N","FM_BIOS_POST_CMPLT_BMC_N",
+	/*AB0-AB7*/	"FM_BMC_BMCINIT_R","","","PWRGD_BMC_PS_PWROK_R","","","","",
+	/*AC0-AC7*/	"","","","","","","","";
+};
+
+&sgpio {
+	status = "okay";
+	gpio-line-names =
+	/* SGPIO output lines */
+	/*OA0-OA7*/	"","","","","","","","",
+	/*OB0-OB7*/	"","","","","","","","",
+	/*OC0-OC7*/	"","","","","","","","",
+	/*OD0-OD7*/	"","","","","","","","",
+	/*OE0-OE7*/	"","","","","","","","",
+	/*OF0-OF7*/	"","","","","","","","",
+	/*OG0-OG7*/	"","","","","","","","",
+	/*OH0-OH7*/	"","","","","","","","",
+	/*OI0-OI7*/	"","","","","","","","",
+	/*OJ0-OJ7*/	"SGPIO_BMC_CLK_R","SGPIO_BMC_LD_R_N","SGPIO_BMC_DOUT_R","SGPIO_BMC_DIN_R","","","","",
+	/*DUMMY*/	"","","","","","","","",
+	/*DUMMY*/	"","","","","","","","",
+
+	/* SGPIO input lines */
+	/*IA0-IA7*/	"","","","","","","","",
+	/*IB0-IB7*/	"","","","","","","","",
+	/*IC0-IC7*/	"","","","","","","","",
+	/*ID0-ID7*/	"","","","","","","","",
+	/*IE0-IE7*/	"","","","","","","","",
+	/*IF0-IF7*/	"","","","","","","","",
+	/*IG0-IG7*/	"","","","","","","","",
+	/*IH0-IH7*/	"","","","","","","","",
+	/*II0-II7*/	"","","","","","","","",
+	/*IJ0-IJ7*/	"","","","","","","","";
+};
+
+&kcs3 {
+	kcs_addr = <0xCA2>;
+	status = "okay";
+};
+
+&kcs4 {
+	kcs_addr = <0xCA4>;
+	status = "okay";
+};
+
+&lpc_snoop {
+	snoop-ports = <0x80>;
+	status = "okay";
+};
+
+/**
+ * SAFS through SPI1 is available only on Wilson Point.
+ * These pins are used as fan presence checking gpios in WFP
+ * so commenting it out for now.
+ * &spi1 {
+ *	status = "okay";
+ *
+ *	flash@0 {
+ *		m25p,fast-read;
+ *		status = "okay";
+ *	};
+ *};
+ */
+
+
+&uart1 {
+	status = "okay";
+};
+
+&uart5 {
+	status = "okay";
+};
+
+&mac0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
+};
+
+&i2c0 {
+	multi-master;
+	general-call;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&i2c2 {
+	status = "okay";
+
+	/* CPU1_Inlet */
+	tmp75@4d {
+		compatible = "national, lm75";
+		reg = <0x4d>;
+	};
+
+	/* CPU2_Inlet */
+	tmp75@4b {
+		compatible = "national, lm75";
+		reg = <0x4b>;
+	};
+	
+	/* FP_Inlet_Temp */
+	tmp75@48 {
+		compatible = "national, lm75";
+		reg = <0x48>;
+	};
+	/* Baseboard_FRU */
+	eeprom@54 {
+		compatible = "atmel,24c64";
+		reg = <0x54>;	
+	};
+	/* FP FRU */
+	eeprom@57 {
+		compatible = "atmel,24c64";
+		reg = <0x57>;
+	};
+
+};
+
+&i2c2 {
+	multi-master;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+	/* BIOS FRU */
+	eeprom@56 {
+		compatible = "atmel,24c64";
+		reg = <0x56>;
+	};
+
+};
+
+&i2c3 {
+	multi-master;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&i2c4 {
+	multi-master;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&i2c5 {
+	bus-frequency = <1000000>;
+	multi-master;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&i2c6 {
+	/* SMB_TEMPSENSOR_STBY_LVC3_R */
+	multi-master;
+	status = "okay";
+
+	sensor@48 {
+		compatible = "ti,tmp75";
+		reg = <0x48>;
+		label = "Rear Brd Temp1";
+	};
+
+	sensor@49 {
+		compatible = "ti,tmp75";
+		reg = <0x49>;
+		label = "Rear Brd Temp2";
+	};
+
+	sensor@4a {
+		compatible = "ti,tmp75";
+		reg = <0x4a>;
+		label = "Front Brd Temp3";
+	};
+
+	sensor@4b {
+		compatible = "ti,tmp75";
+		reg = <0x4b>;
+		label = "BMC Temp";
+	};
+
+	sensor@4c {
+		compatible = "ti,tmp75";
+		reg = <0x4c>;
+		label = "CPU0 North VRs";
+	};
+
+	sensor@4d {
+		compatible = "ti,tmp75";
+		reg = <0x4d>;
+		label = "CPU0 South VRs";
+	};
+
+	sensor@4e {
+		compatible = "ti,tmp75";
+		reg = <0x4e>;
+		label = "CPU1 North VRs";
+	};
+
+	sensor@4f {
+		compatible = "ti,tmp75";
+		reg = <0x4f>;
+		label = "CPU1 South VRs";
+	};
+};
+
+
+&i2c7 {
+	multi-master;
+	#retries = <3>;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&i2c9 {
+	multi-master;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&i2c11 {
+	multi-master;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&i2c13 {
+	multi-master;
+	aspeed,dma-buf-size = <4095>;
+	aspeed,hw-timeout-ms = <300>;
+	status = "okay";
+};
+
+&gfx {
+	status = "okay";
+	memory-region = <&gfx_memory>;
+};
+
+&vuart {
+	status = "okay";
+};
+
+&pwm_tacho {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_pwm0_default &pinctrl_pwm1_default
+			 &pinctrl_pwm2_default &pinctrl_pwm3_default
+			 &pinctrl_pwm4_default &pinctrl_pwm5_default
+			 &pinctrl_pwm6_default &pinctrl_pwm7_default>;
+
+	fan@0 {
+		reg = <0x00>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x00 0x01>;
+	};
+	fan@1 {
+		reg = <0x01>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x02 0x03>;
+	};
+	fan@2 {
+		reg = <0x02>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x04 0x05>;
+	};
+	fan@3 {
+		reg = <0x03>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x06 0x07>;
+	};
+	fan@4 {
+		reg = <0x04>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x08 0x09>;
+	};
+	fan@5 {
+		reg = <0x05>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x0A 0x0B>;
+	};
+	fan@6 {
+		reg = <0x06>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x0C 0x0D>;
+	};
+	fan@7 {
+		reg = <0x07>;
+		aspeed,fan-tach-ch = /bits/ 8 <0x0E 0x0F>;
+	};
+
+};
+
+&timer {
+/*
+ *	Available settings:
+ *	fttmr010,pwm-outputs = <5>, <6>, <7>, <8>;
+ *	pinctrl-0 = <&pinctrl_timer5_default &pinctrl_timer6_default
+ *			&pinctrl_timer7_default &pinctrl_timer8_default>;
+ */
+	fttmr010,pwm-outputs = <6>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_timer6_default>;
+	#pwm-cells = <3>;
+	status = "okay";
+};
+
+
