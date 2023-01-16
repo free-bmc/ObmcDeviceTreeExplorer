@@ -65,6 +65,10 @@ def Initialize():
     for arch in ArchDTSList:
         ArchList.append(str(Path(arch).absolute()).replace(os.path.join(OBMC_LINUX_SOURCE_DIR,'arch'),"").replace('/boot/dts',''))
 
+    print("List of Architectures Found in Linux Source:")
+    for ar in ArchList:
+        print('\t', ar.replace('/',''))
+
     return 0
 
 
@@ -134,8 +138,8 @@ def CLIStart(ToolVersion):
 
         elif option.startswith("filter"):
             suboption = option.split(" ")
-            if len(suboption) > 2:
-                for i in range(2, len(suboption)):
+            if len(suboption) >= 2:
+                for i in range(1, len(suboption)):
                     DTSFilter.append(suboption[i])
         elif option.startswith("scanfile"):
             suboption = option.split(" ")
@@ -155,7 +159,15 @@ def CLIStart(ToolVersion):
             for entry in obj:
                 if entry.name.endswith('.dts'):
                     #print(entry.name)
-                    DTSFileList.append(entry)
+                    if len(DTSFilter) > 0: 
+                        filtercount = 0
+                        for i in range(0, len(DTSFilter)):
+                            if DTSFilter[i] in entry.name:
+                                filtercount += 1
+                        if filtercount == len(DTSFilter):
+                            DTSFileList.append(entry)
+                    else:
+                        DTSFileList.append(entry)
             
             for i in progressbar(range(len(DTSFileList)), "Scanning DTS Files : ", 100):
                     platDTS = PlatformDTSClass()
