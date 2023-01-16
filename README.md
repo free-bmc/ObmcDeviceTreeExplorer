@@ -34,7 +34,7 @@ export OBMC_LINUX_SOURCE_DIR=/home/hari/github/LinuxSource/linux-dev-6.0/
 
 ### Tool Usage 
 
-...
+```
 $ ./dtsexplorer.py
 Welcome to Device Tree Explorer Utility
 Linux Source Reference Directory is  /home/hari/github/LinuxSource/linux-dev-6.0
@@ -138,7 +138,7 @@ Scanning DTS Files : [##########################################################
                 aspeed-bmc-opp-tacoma.dts                       12           55           24           0            4            0            0            1          7
                aspeed-bmc-intel-s2600wf.dts                     8            0            0            0            32           0            0            0          0
 Device Tree CLI >>
-...
+```
 
 ### Notes for Users 
 
